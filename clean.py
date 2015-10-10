@@ -50,9 +50,9 @@ opened_braces = 0
 if len(sys.argv) < 3 or sys.argv[2] == '-':
     output = sys.stdout
 else:
-    output = file(sys.argv[2], 'w')
+    output = open(sys.argv[2], 'w')
 
-for line in file(sys.argv[1]):
+for line in open(sys.argv[1]):
     line = line.rstrip('\n')
     
     if opened_braces > 0:
@@ -71,7 +71,7 @@ for line in file(sys.argv[1]):
     line = hyphen_re.sub('--', line)
     line = accent_re.sub(accent_replace, line)
     line = lowercase_re.sub(lowercase_replace, line)
-    print >> output, line
+    output.write(line+'\n')
 
 
 output.close()
