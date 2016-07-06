@@ -20,6 +20,7 @@ accent_re = r'''
         \s+       # No argument -- a space
     )
 '''
+
 lowercase_re = r'\bd\''
 firstword_re = r'\s*(\w+)'
 
@@ -33,7 +34,7 @@ letters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
 
 def accent_replace(match):
     command, argument = match.groups()
-    
+
     if argument.strip():
         return '{%s%s}' % (command, argument)
     else:
@@ -50,15 +51,15 @@ opened_braces = 0
 if len(sys.argv) < 3 or sys.argv[2] == '-':
     output = sys.stdout
 else:
-    output = file(sys.argv[2], 'w')
+    output = open(sys.argv[2], 'w', encoding='utf8')
 
-for line in file(sys.argv[1]):
+for line in open(sys.argv[1], encoding='utf8'):
     line = line.rstrip('\n')
-    
+
     if opened_braces > 0:
         opened_braces += line.count('{') - line.count('}')
         continue
-    
+
     match = firstword_re.match(line)
     if match is not None:
         first_word = match.group(1)
@@ -67,11 +68,10 @@ for line in file(sys.argv[1]):
             # that the group is closed and stop the group
             opened_braces = line.count('{') - line.count('}')
             continue
-    
+
     line = hyphen_re.sub('--', line)
     line = accent_re.sub(accent_replace, line)
     line = lowercase_re.sub(lowercase_replace, line)
-    print >> output, line
-
+    output.write(line + '\n')
 
 output.close()
